@@ -1,0 +1,35 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  min-width: 285px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.loginWrapper {
+  height: 100vh;
+  background: aquamarine;
+}
+
+@media (max-width: 520px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+/* Media queries for adjusting grid layout at different breakpoints */
+@media only screen and (min-width: 521px) and (max-width: 768px){
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .loginWrapper {
+    height: 1200px;
+    background: aquamarine;
+  }
+}
