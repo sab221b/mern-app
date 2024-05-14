@@ -1,8 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const mongoose = require('mongoose');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -11,7 +9,7 @@ var cors = require('cors');
 app.use(cors());
 require('dotenv').config();
 require('./models/db');
-
+const { mongoStore } = require('./mongoStore');
 var apiRouter = require('./routes/apiRouter');
 
 // view engine setup
@@ -29,11 +27,7 @@ app.use(session({
   cookie: { maxAge: 3600 * 24 * 1000 },
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: 'mongodb://localhost:27017/session',
-    secret: process.env.SESSION_SECRET,
-    touchAfter: 24 * 60 * 60
-  })
+  store: mongoStore,
 }));
 
 
