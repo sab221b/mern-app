@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const userController = require("../controllers/user");
 const { hidePassword } = require("../middleware/password");
-const { checkUserSession } = require("../middleware/interceptor");
+const { checkUserSession, getUserBySession } = require("../middleware/interceptor");
 
 /* GET api. */
 router.get("/", (req, res, next) => {
@@ -14,6 +14,7 @@ router.get("/users", checkUserSession, userController.getUsers);
 router.get("/users/:id", checkUserSession, userController.getUserById);
 router.post("/user/login", userController.login, hidePassword);
 router.post("/user/signup", userController.createUser, hidePassword);
+router.get("/user/self", getUserBySession, hidePassword);
 router.get("/user/logout", userController.logout);
 router.post("/user/:id", checkUserSession, userController.updateUser);
 
