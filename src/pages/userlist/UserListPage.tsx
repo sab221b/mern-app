@@ -3,6 +3,8 @@ import { Table } from "react-bootstrap";
 import Axios from "../../helpers/interceptor";
 import { toast } from "react-toastify";
 import moment from "moment";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const UserListPage = () => {
   const [users, setUsers] = useState([]);
@@ -38,6 +40,7 @@ const UserListPage = () => {
             <th>Date of Birth</th>
             <th>Email</th>
             <th>Phone</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -53,6 +56,7 @@ const UserListPage = () => {
                   <td>{formattedDate(user.profile.date_of_birth) || '-'}</td>
                   <td>{user.email || '-'}</td>
                   <td>{user.phone || '-'}</td>
+                  <td><EditIcon/><DeleteIcon/></td>
                 </tr>
               );
             })}

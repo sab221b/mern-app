@@ -1,23 +1,23 @@
 const mongoose = require('mongoose');
 
-var userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    phone: { type: String, unique: true, sparse: true },
-    profile: {
+var transactionSchema = new mongoose.Schema({
+    status: { type: String, required: true },
+    description: { type: String },
+    bill_number: { type: String },
+    amount: { type: String },
+    from: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Profile'
     },
-    role: {
+    to: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Role'
+        ref: 'Profile'
     },
-    lastLoginAt: { type: Date },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     isDeleted: { type: Boolean, default: false }
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Transaction', transactionSchema);

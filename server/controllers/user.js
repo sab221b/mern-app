@@ -44,7 +44,7 @@ exports.login = async (req, res, next) => {
             if (passwordMatch) {
                 const loginUser = await User.findByIdAndUpdate(user._id, {
                     lastLoginAt: new Date().toISOString(),
-                }, { new: true }).populate('profile')
+                }, { new: true }).populate('profile').populate('role');
                 res.user = loginUser;
                 req.session.user_id = loginUser._id;
                 res.set('Session-Id', req.session.id);
