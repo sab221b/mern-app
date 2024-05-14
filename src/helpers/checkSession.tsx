@@ -7,7 +7,7 @@ import PreLoginRoutes from "../routes/PreLoginRoutes";
 const CheckSession = () => {
     let sessionID = useSelector((state: any) => {
         const sessionId = state.app.user.sessionId;
-        return sessionId || sessionStorage.getItem("session_id") || '';
+        return sessionId || sessionStorage.getItem("session_id") || localStorage.getItem("session_id") || '';
     });
 
     return (
