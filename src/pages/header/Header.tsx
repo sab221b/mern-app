@@ -34,13 +34,8 @@ function Header() {
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate("/home")}>Home</Nav.Link>
             <Nav.Link onClick={() => navigate("/user-list")}>Userlist</Nav.Link>
-            <NavDropdown title="Menu" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={() => navigate("/profile")}>
-                My Profile
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item onClick={logoutUser}>Sign out</NavDropdown.Item>
-            </NavDropdown>
+            <Nav.Link onClick={() => navigate("/profile")}>My Profile</Nav.Link>
+            <Nav.Link onClick={logoutUser}>Sign out</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
