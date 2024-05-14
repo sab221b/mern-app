@@ -20,12 +20,10 @@ const getSession = async (req, res) => {
         console.error("Error retrieving session:", error);
         reject(error);
       }
-
       if (!session) {
         // Session not found
         reject(new Error("Session not found"));
       }
-
       // Session found
       if (session) {
         req.session.user_id = session.user_id;
@@ -36,13 +34,30 @@ const getSession = async (req, res) => {
 };
 
 module.exports = {
+  getUserBySession: async (req, res, next) => {
+    if (req.session.user_id || req.headers.session_id) {
+      try {
+        if (req.session.user_id) {
+          const user = await User.findById(req.session.user_id).select('-password').populate('profile');
+          if (user && user._id) res.status(200).send(user);
+        } else if (req.headers.session_id) {
+          const session = await getSession(req, res);
+          const user = session && await User.findById(session.user_id).select('-password').populate('profile');
+          if (user && user._id) res.status(200).send(user);
+        } else sessionDestroy(req, res);
+      } catch (error) {
+        sessionDestroy(req, res);
+      }
+    } else {
+      sessionDestroy(req, res);
+    }
+  },
+
   checkUserSession: async (req, res, next) => {
     if (req.session.user_id || req.headers.session_id) {
       try {
         if (req.session.user_id) {
-          const user = await User.findById(
-            req.session.user_id || session.user_id
-          );
+          const user = await User.findById(req.session.user_id);
           if (user && user._id) next();
         } else if (req.headers.session_id) {
           const session = await getSession(req, res);
@@ -56,18 +71,21 @@ module.exports = {
       sessionDestroy(req, res);
     }
   },
+
   checkAdminRole: (req, res, next) => {
     if (req.session.user_id && (req.session.role_id == 1 || req.session.role_id == 2))
       next();
     else
       next(createError(403));
   },
+
   allowLogin: (req, res, next) => {
     if (req.session.user_id)
       res.redirect('/');
     else
       next();
   },
+
   sessionLogout: (req, res, next) => {
     req.session.destroy((err) => {
       if (err) {
