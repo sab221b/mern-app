@@ -35,19 +35,19 @@ exports.createAdmin = () => {
             adminUser.createdAt = new Date().toISOString();
             const adminRole = await Role.findOne({ name: 'admin' })
             adminUser.role = adminRole._id;
-            await adminUser.save()
-                .then(() => {
-                    console.log('Admin added successfully');
+            try {
+                await adminUser.save();
+                console.log('admin added successfully');
+                resolve();
+            } catch (err) {
+                await Profile.findByIdAndDelete(savedProfile._id);
+                if (err.code === 11000) {
                     resolve();
-                })
-                .catch(async err => {
-                    if (err.code === 11000) {
-                        const deleteProfile = await Profile.findByIdAndDelete(savedProfile._id);
-                        resolve();
-                    }
+                } else if (err.code !== 11000) {
                     console.error('Error adding admin', err);
                     reject(err); // Reject the promise with the error
-                });
+                }
+            }
         } else {
             resolve();
         }

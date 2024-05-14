@@ -15,11 +15,8 @@ function runMigrations() {
             console.error('Error executing migrations', err);
         })
         .finally(() => {
-            mongoose.disconnect(); 
+            mongoose.disconnect();
         })
 };
 
 runMigrations();
-setTimeout(() => {
-    runMigrations();
-})

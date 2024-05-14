@@ -21,21 +21,11 @@ exports.createFeatures = () => {
             resolve();
         } catch (err) {
             if (err.code === 11000) {
-                return;
+                resolve();
+            } else if (err.code !== 11000) {
+                console.error('Error adding features', err);
+                reject(err); // Reject the promise with the error
             }
-            reject(err);
         }
-
-        // .then(() => {
-        //     console.log('Features added successfully');
-        //     resolve(); // Resolve the promise with the result of insertMany
-        // })
-        // .catch(err => {
-        //     if (err.code === 11000) {
-        //         resolve();
-        //     }
-        //     console.error('Error adding features', err);
-        //     reject(err); // Reject the promise with the error
-        // });
     });
 }
