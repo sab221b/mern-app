@@ -12,7 +12,7 @@ mongoose.connect(`mongodb://localhost:27017/${process.env.APP_NAME}`);
 const adminPayload = {
     email: `admin.${process.env.APP_NAME}@gmail.com`,
     phone: "9876543210",
-    password: "admin@123",
+    password: "Admin@123",
     profile: {
         firstname: "admin",
         lastname: `${process.env.APP_NAME}`,
