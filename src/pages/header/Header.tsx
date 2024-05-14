@@ -13,6 +13,7 @@ function Header() {
     try {
       const response: any = await Axios.get("/user/logout");
       sessionStorage.removeItem("session_id");
+      localStorage.removeItem("session_id");
       toast.success(response.data.message, {
         onClose: () => (window.location.href = "/"),
       });

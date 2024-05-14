@@ -72,17 +72,18 @@ const Login = (props: any) => {
           payload = { profile };
           break;
       }
-      const loginResponse: any = await Axios.post(`/user/${formname}`, payload);
+      const resp: any = await Axios.post(`/user/${formname}`, payload);
       let toastMessage = "";
       if (formname === "login" || formname === "signup") {
-        const session_id = loginResponse.headers.get("session-id");
+        const session_id = resp.headers.get("session-id");
         sessionStorage.setItem("session_id", session_id);
+        localStorage.setItem("session_id", session_id);
         dispatch(userActions.setSessionId(session_id));
-        toastMessage = `Welcome ${loginResponse.data.profile.firstname} ${loginResponse.data.profile.lastname}`;
+        toastMessage = `Welcome ${resp.data.profile.firstname} ${resp.data.profile.lastname}`;
       } else if (formname === "profile") {
         toastMessage = "Profile Updated!";
       }
-      dispatch(userActions.setUserData(loginResponse.data));
+      dispatch(userActions.setUserData(resp.data));
       toast.success(toastMessage, {
         onClose: () => navigate("/"),
       });
@@ -109,9 +110,7 @@ const Login = (props: any) => {
   return (
     <div
       ref={parentDivRef}
-      className={`center-center flex-column loginWrapper ${
-        formname === "profile" && "bg-info"
-      }`}
+      className={`center-center flex-column loginWrapper ${formname === "profile" && "bg-info"}`}
       style={datepickerShow ? { minHeight: 900 } : {}}
     >
       <Typography variant="h4" textTransform={"capitalize"} gutterBottom>
