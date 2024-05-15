@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import Axios from "../../helpers/interceptor";
 import { toast } from "react-toastify";
 import moment from "moment";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from "react-router-dom";
 
 const UserListPage = () => {
   const [users, setUsers] = useState([]);
+  let navigate = useNavigate();
 
   useEffect(() => {
     getAllUsers();
   }, []);
 
-  const getAllUsers = async() => {
+  const getAllUsers = async () => {
     try {
-        const response: any = await Axios.get('/users');
-        if(response.data) {
-            setUsers(response.data);
-        }
+      const response: any = await Axios.get('/users');
+      if (response.data) {
+        setUsers(response.data);
+      }
     } catch (error: any) {
-        toast.error(error.response.message || error.response.data.message);
+      toast.error(error.response.message || error.response.data.message);
     }
   }
-  
+
   const formattedDate = (date: Date) => {
     return moment(date).format('DD/MM/YYYY')
   };
@@ -40,6 +42,7 @@ const UserListPage = () => {
             <th>Date of Birth</th>
             <th>Email</th>
             <th>Phone</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -56,7 +59,12 @@ const UserListPage = () => {
                   <td>{formattedDate(user.profile.date_of_birth) || '-'}</td>
                   <td>{user.email || '-'}</td>
                   <td>{user.phone || '-'}</td>
-                  <td><EditIcon/><DeleteIcon/></td>
+                  <td>{user.role.name || '-'}</td>
+                  <td>
+                    <span className="d-flex">
+                      <EditIcon className="cursor-pointer mx-2" onClick={() => navigate(`/profile/${user._id}`)} /><DeleteIcon className="cursor-pointer mx-2" />
+                    </span>
+                  </td>
                 </tr>
               );
             })}

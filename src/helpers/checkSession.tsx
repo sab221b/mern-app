@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import Header from "../pages/header/Header";
 import PostLoginRoutes from "../routes/PostLoginRoutes";
 import PreLoginRoutes from "../routes/PreLoginRoutes";
+import Header from "../components/header/Header";
 
 const CheckSession = () => {
     let sessionID = useSelector((state: any) => {

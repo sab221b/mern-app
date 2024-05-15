@@ -7,7 +7,7 @@ const { mongoStore } = require('../mongoStore');
 
 exports.getUsers = async (req, res, next) => {
   try {
-    let users = await User.find(req.query).select('-password').populate('profile');
+    let users = await User.find(req.query).select('-password').populate('profile').populate('role');
     users = users.map(item => {
       const { password, ...userObj } = item._doc;
       return userObj;
@@ -20,7 +20,7 @@ exports.getUsers = async (req, res, next) => {
 
 exports.getUserById = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).select('-password').populate('profile');
+    const user = await User.findById(req.params.id).select('-password').populate('profile').populate('role');
     res.status(200).send(user);
   } catch (error) {
     res.status(400).send(error);
@@ -73,6 +73,23 @@ exports.logout = async (req, res) => {
   }
 };
 
+exports.updateProfile = async (req, res, next) => {
+  try {
+    let { error } = userUpdate.validate(req.body);
+    if (error) {
+      console.error(error);
+      return res.status(400).json(error);
+    }
+    const user = await User.findById(req.session.user_id).select('-password').populate('profile').populate('role');
+    const profileId = user.profile._id;
+    await Profile.findByIdAndUpdate(profileId, req.body.profile, { new: true });
+    updatedUser = await User.findById(req.session.user_id).select('-password').populate('profile').populate('role');
+    res.status(200).send(updatedUser);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+}
+
 exports.updateUser = async (req, res, next) => {
   try {
     let { error } = userUpdate.validate(req.body);
@@ -80,10 +97,11 @@ exports.updateUser = async (req, res, next) => {
       console.error(error);
       return res.status(400).json(error);
     }
-    const user = await User.findById(req.session.user_id).select('-password').populate('profile');
+    const user = await User.findById(req.params.id).select('-password').populate('profile');
     const profileId = user.profile._id;
     await Profile.findByIdAndUpdate(profileId, req.body.profile, { new: true });
-    updatedUser = await User.findById(req.session.user_id).select('-password').populate('profile');
+    updatedUser = await User.findByIdAndUpdate(req.params.id, { profile: profileId, role: req.body.role }, { new: true })
+      .select('-password').populate('profile').populate('role');
     res.status(200).send(updatedUser);
   } catch (error) {
     res.status(400).send(error);

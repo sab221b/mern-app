@@ -12,12 +12,13 @@ router.get("/", (req, res, next) => {
 
 /* User Router */
 router.get("/users", checkUserSession, userController.getUsers);
-router.get("/users/:id", checkUserSession, userController.getUserById);
 router.post("/user/login", userController.login, hidePassword);
 router.post("/user/signup", userController.createUser, hidePassword);
 router.get("/user/self", getUserBySession, hidePassword);
 router.get("/user/logout", userController.logout);
+router.post("/user/profile", checkUserSession, userController.updateProfile);
 router.post("/user/:id", checkUserSession, userController.updateUser);
+router.get("/user/:id", checkUserSession, userController.getUserById);
 
 /* Role Router */
 router.get("/roles", checkUserSession, roleController.getRoles);

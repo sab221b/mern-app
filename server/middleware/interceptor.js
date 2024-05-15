@@ -38,11 +38,11 @@ module.exports = {
     if (req.session.user_id || req.headers.session_id) {
       try {
         if (req.session.user_id) {
-          const user = await User.findById(req.session.user_id).select('-password').populate('profile');
+          const user = await User.findById(req.session.user_id).select('-password').populate('profile').populate('role');
           if (user && user._id) res.status(200).send(user);
         } else if (req.headers.session_id) {
           const session = await getSession(req, res);
-          const user = session && await User.findById(session.user_id).select('-password').populate('profile');
+          const user = session && await User.findById(session.user_id).select('-password').populate('profile').populate('role');
           if (user && user._id) res.status(200).send(user);
         } else sessionDestroy(req, res);
       } catch (error) {
@@ -61,8 +61,9 @@ module.exports = {
           if (user && user._id) next();
         } else if (req.headers.session_id) {
           const session = await getSession(req, res);
-          const user = session && (await User.findById(session.user_id));
+          const user = session && await User.findById(session.user_id);
           if (user && user._id) next();
+          else sessionDestroy(req, res);
         } else sessionDestroy(req, res);
       } catch (error) {
         sessionDestroy(req, res);

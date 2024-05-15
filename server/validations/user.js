@@ -11,11 +11,11 @@ const phoneSchema = Joi.string().pattern(/^\d{10}$/).messages({
 });;
 
 const passwordSchema = Joi.string()
-.min(8) // Minimum length of 8 characters
-.max(30) // Maximum length of 30 characters
-.pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-.message('Password must contain at least 8 characters, one letter, one number, and one special character (@$!%*?&)')
-.required();
+    .min(8) // Minimum length of 8 characters
+    .max(30) // Maximum length of 30 characters
+    .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+    .message('Password must contain at least 8 characters, one letter, one number, and one special character (@$!%*?&)')
+    .required();
 
 module.exports = {
     userSignup: Joi.object().keys({
@@ -35,5 +35,6 @@ module.exports = {
     }).or('email', 'phone'),
     userUpdate: Joi.object().keys({
         profile: profileSchema,
+        role: Joi.string().regex(/^[0-9a-fA-F]{24}$/)
     }),
 }

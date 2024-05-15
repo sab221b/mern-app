@@ -22,7 +22,7 @@ import { actions as userActions } from "../../store/reducers/userSlice";
 import moment from "moment";
 
 const Login = (props: any) => {
-  const { formTitle, userData, onUpdate } = props;
+  const { formTitle, userData, onUpdate, roles, userID } = props;
   const formRef = useRef(null);
   const parentDivRef = useRef(null);
   const dispatch = useDispatch();
@@ -37,6 +37,7 @@ const Login = (props: any) => {
     firstname: "",
     lastname: "",
     gender: "",
+    role: "",
     date_of_birth: moment(),
   });
 
@@ -61,29 +62,43 @@ const Login = (props: any) => {
         date_of_birth: date_of_birth.toISOString(),
       };
       let payload;
+      let resp: any = {}
       switch (formname) {
-        case "login":
+        case "login": {
           payload = { email, password };
+          resp = await Axios.post(`/user/${formname}`, payload);
           break;
-        case "signup":
+        }
+        case "signup": {
           payload = { email, password, profile };
+          resp = await Axios.post(`/user/${formname}`, payload);
           break;
-        case "profile":
-          payload = { profile };
+        }
+        case "profile": {
+          if (userID) {
+            payload = { profile, role: formData.role };
+            resp = await Axios.post(`/user/${userID}`, payload);
+          } else {
+            payload = { profile };
+            resp = await Axios.post(`/user/profile`, payload);
+          }
           break;
+        }
       }
-      const resp: any = await Axios.post(`/user/${formname}`, payload);
+
       let toastMessage = "";
       if (formname === "login" || formname === "signup") {
-        const session_id = resp.headers.get("session-id");
+        const session_id = resp?.headers?.get("session-id");
         sessionStorage.setItem("session_id", session_id);
         localStorage.setItem("session_id", session_id);
         dispatch(userActions.setSessionId(session_id));
         toastMessage = `Welcome ${resp.data.profile.firstname} ${resp.data.profile.lastname}`;
       } else if (formname === "profile") {
         toastMessage = "Profile Updated!";
+        if (!userID) {
+          dispatch(userActions.setUserData(resp.data));
+        }
       }
-      dispatch(userActions.setUserData(resp.data));
       toast.success(toastMessage, {
         onClose: () => navigate("/"),
       });
@@ -96,6 +111,7 @@ const Login = (props: any) => {
   useEffect(() => {
     if (userData) {
       const { firstname, lastname, gender, date_of_birth } = userData?.profile;
+      const roleID = userData?.role?._id;
       setFormData({
         ...formData,
         firstname,
@@ -103,6 +119,7 @@ const Login = (props: any) => {
         gender,
         date_of_birth: moment(date_of_birth),
         email: userData.email,
+        role: roleID
       });
     }
   }, [userData]);
@@ -210,6 +227,24 @@ const Login = (props: any) => {
                   />
                 </LocalizationProvider>
               </FormControl>
+
+              {formname === 'profile' && userID && (
+                <FormControl className="form-field">
+                  <InputLabel id="role">Role</InputLabel>
+                  <Select
+                    labelId="role"
+                    id="role"
+                    value={formData.role}
+                    label="Role"
+                    name="role"
+                    onChange={handleChange}
+                  >
+                    {roles?.map((item: any) =>
+                      <MenuItem selected={formData.role === item._id} value={item._id}>{item.name}</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              )}
             </>
           )}
         </div>

@@ -22,13 +22,6 @@ const requestHandler = (request: any) => {
 };
 
 const responseHandler = (response: any) => {
-  if (response.status === 401) {
-    sessionStorage.removeItem("session_id");
-    localStorage.removeItem("session_id");
-    toast.error(response.data.message, {
-      onClose: () => (window.location.href = "/"),
-    });
-  }
   return response;
 };
 

@@ -14,6 +14,7 @@ const PostLoginRoutes = () => {
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route path={'/'} element={<HomePage />} />
         <Route path={'/profile'} element={<ProfilePage />} />
+        <Route path={'/profile/:userID'} element={<ProfilePage />} />
         <Route path='/user-list' element={<UserListPage />} />
       </Routes>
     </Suspense>
