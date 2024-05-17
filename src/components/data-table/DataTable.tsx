@@ -1,12 +1,16 @@
-import * as React from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 
-export default function DataTable(props: any) {
+interface DataTableProps {
+    rows: GridRowsProp;
+    columns: GridColDef[];
+}
+
+export default function DataTable({ rows, columns }: DataTableProps) {
     return (
         <div style={{ height: 400, width: '100%' }}>
             <DataGrid
-                rows={props?.rows}
-                columns={props?.columns}
+                rows={rows}
+                columns={columns}
                 initialState={{
                     pagination: {
                         paginationModel: { page: 0, pageSize: 5 },

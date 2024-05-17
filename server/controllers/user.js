@@ -62,13 +62,13 @@ exports.login = async (req, res, next) => {
   }
 }
 
-exports.logout = async (req, res) => {
+exports.logout = (req, res) => {
   try {
-    await mongoStore.destroy(req.headers.session_id); // Assuming this method exists in connect-mongo
-    await mongoStore.destroy(req.session.id);
+    mongoStore.destroy(req.headers.session_id);
+    mongoStore.destroy(req.session.id);
     res.status(200).send({ message: "User logged out" });
   } catch (error) {
-    console.error("Error destroying session:", error);
+    console.error("Error while destroying session:", error);
     res.status(400).send(error);
   }
 };
