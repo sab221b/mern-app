@@ -22,7 +22,7 @@ const profileWrapper = (WrappedComponent: any) => {
 
     useEffect(() => {
       if (params?.userID) {
-        getUserInfo(params?.userID);
+        getSelectedUserInfo(params?.userID);
         getRoles();
       }
     }, [params?.userID])
@@ -37,7 +37,7 @@ const profileWrapper = (WrappedComponent: any) => {
       }
     };
 
-    const getUserInfo = async (userID: string) => {
+    const getSelectedUserInfo = async (userID: string) => {
       try {
         const resp = await Axios.get(`/user/${userID}`);
         setUserInfo(resp.data);

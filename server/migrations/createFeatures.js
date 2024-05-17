@@ -6,10 +6,13 @@ mongoose.connect(`mongodb://localhost:27017/${process.env.APP_NAME}`);
 
 // Array of features to be inserted
 const features = [
-    { name: 'agent Management', description: "Agent management feature" },
-    { name: 'product Management', description: "Product management feature" },
-    { name: 'quotation Generator', description: "Quotation generation feature" },
-    { name: 'bill Generator', description: "Bill generation feature" },
+    { name: 'agent management', key: 'agent', description: "Agent management feature" },
+    { name: 'product management', key: 'product', description: "Product management feature" },
+    { name: 'user management', key: 'user', description: "User management feature" },
+    { name: 'role management', key: 'role', description: "Role management feature" },
+    { name: 'quotation generator', key: 'quotation', description: "Quotation generation feature" },
+    { name: 'bill generator', key: 'bill', description: "Bill generation feature" },
+    { name: 'transaction management', key: 'transaction', description: "Transaction management feature" },
     // Add more features as needed
 ];
 

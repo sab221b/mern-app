@@ -8,9 +8,9 @@ import { actions as userActions } from "../../store/reducers/userSlice";
 import { Box, Button, Modal, Typography } from "@mui/material";
 
 function Header() {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  let userData = useSelector((state: any) => state.app.user.userData);
+  const userData = useSelector((state: any) => state.app.user.userData);
   const [showLogoutModal, toggleLogoutModal] = useState(false);
 
   useEffect(() => {
@@ -59,15 +59,12 @@ function Header() {
       <Navbar className="sticky-top" bg="light" expand="sm">
         <Container fluid={true}>
           <Nav.Link onClick={() => navigate("/")}>
-            <Navbar.Brand>Products Pro</Navbar.Brand>
+            <Navbar.Brand>Pro2z</Navbar.Brand>
           </Nav.Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link onClick={() => navigate("/home")}>Home</Nav.Link>
-              {userData?.role?.name === 'admin' && (
-                <Nav.Link onClick={() => navigate("/user-list")}>Userlist</Nav.Link>
-              )}
+              <Nav.Link onClick={() => navigate("/dashboard")}>Dashboard</Nav.Link>
               <Nav.Link onClick={() => navigate("/profile")}>My Profile</Nav.Link>
               <Nav.Link onClick={() => toggleLogoutModal(true)}>Sign out</Nav.Link>
             </Nav>

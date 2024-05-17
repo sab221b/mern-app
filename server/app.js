@@ -6,11 +6,19 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const app = express();
 var cors = require('cors');
-app.use(cors());
+
 require('dotenv').config();
 require('./models/db');
 const { mongoStore } = require('./mongoStore');
 var apiRouter = require('./routes/apiRouter');
+
+// app.use(cors({
+//   // origin: `${process.env.REACT_APP_URL}`, // Specify the origin of your React app
+//   origin: 'http://localhost:8081',
+//   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+// }));
+
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,7 +32,7 @@ console.log('app-env ==============> ', app.get('env'));
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  cookie: { maxAge: 3600 * 24 * 1000 },
+  cookie: { maxAge: 1000 * 60 * 60 * 24 }, // Setting maxAge to 1 day
   resave: false,
   saveUninitialized: false,
   store: mongoStore,
@@ -33,6 +41,7 @@ app.use(session({
 
 const parentDirectory = path.resolve(__dirname, '..');
 const staticMiddleware = express.static(path.join(parentDirectory, '/build'));
+
 app.use('/', staticMiddleware);
 app.use('/api', apiRouter);
 

@@ -26,11 +26,17 @@ const responseHandler = (response: any) => {
 };
 
 const errorHandler = (error: any) => {
-  sessionStorage.removeItem("session_id");
-  localStorage.removeItem("session_id");
-  toast.error(error.response.data.message, {
-    onClose: () => (window.location.href = "/"),
-  });
+  if (error.response && error.response.status === 401) {
+    // Handle 401 error (Unauthorized)
+    sessionStorage.removeItem("session_id");
+    localStorage.removeItem("session_id");
+    toast.error("You are not authorized to access this page.", {
+      onClose: () => (window.location.href = "/"), // Redirect to the login page
+    });
+  } else {
+    toast.error(error.response.data.message);
+  }
+  console.error(error);
   return Promise.reject(error);
 };
 

@@ -15,8 +15,7 @@ const CheckSession = () => {
             <>
                 <Header />
                 <PostLoginRoutes />
-            </> :
-            <PreLoginRoutes />
+            </> : <PreLoginRoutes />
     )
 
 }

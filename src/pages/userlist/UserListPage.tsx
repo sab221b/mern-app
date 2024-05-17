@@ -1,77 +1,81 @@
-import { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
+
 import Axios from "../../helpers/interceptor";
+import { useEffect, useState } from "react";
+import DataTable from "../../components/data-table/DataTable";
 import { toast } from "react-toastify";
+import { flattenObject } from "../../helpers/flattenObjects";
 import moment from "moment";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useNavigate } from "react-router-dom";
 
-const UserListPage = () => {
-  const [users, setUsers] = useState([]);
-  let navigate = useNavigate();
+const TableWrapper = (WrappedComponent: any) => {
+  // This component will wrap the original component
+  const CreateUserTable = (props: any) => {
+    const [userList, setUserList] = useState<any>([])
+    const itemsToShow = ["email", "phone", "firstname", "lastname", "gender", "date of birth", "role", "createdAt"];
 
-  useEffect(() => {
-    getAllUsers();
-  }, []);
+    useEffect(() => {
+      !userList.length && getAllUsers();
+    }, []);
 
-  const getAllUsers = async () => {
-    try {
-      const response: any = await Axios.get('/users');
-      if (response.data) {
-        setUsers(response.data);
+    const getAllUsers = async () => {
+      try {
+        const response: any = await Axios.get('/users');
+        if (response.data) {
+          const userData = response.data.map((item: any) => {
+            const role = item.role.name;
+            delete item.role;
+            item.role = role;
+            const { firstname, lastname, gender, date_of_birth } = item.profile;
+            delete item.profile;
+            item.firstname = firstname;
+            item.lastname = lastname;
+            item.gender = gender;
+            item["date of birth"] = moment(date_of_birth).format("DD/MM/YYYY");;
+            item.createdAt = moment(item.createdAt).format("DD/MM/YYYY hh:mm");
+            return item;
+          })
+          setUserList(userData);
+        }
+      } catch (error: any) {
+        toast.error(error.response.message || error.response.data.message);
       }
-    } catch (error: any) {
-      toast.error(error.response.message || error.response.data.message);
-    }
-  }
+    };
 
-  const formattedDate = (date: Date) => {
-    return moment(date).format('DD/MM/YYYY')
+    const setRows = () => {
+      if (userList.length) {
+        const rows: any[] = [];
+        userList.map((item: any) => rows.push(flattenObject(item)));
+        return rows
+      } else {
+        return []
+      }
+    }
+
+    const setColumns = () => {
+      if (userList.length) {
+        const flattenedObject = flattenObject(userList[0]);
+        let columns: any[] = Object.keys(flattenedObject)?.filter(item => itemsToShow?.includes(item));
+        columns = columns.map(item => {
+          return {
+            field: item, headerName: item, width: 180
+          }
+        })
+        return columns;
+      } else {
+        return []
+      }
+    }
+
+    let newProps = {
+      ...props,
+      rows: setRows(),
+      columns: setColumns()
+    }
+    return userList ? <WrappedComponent {...newProps} /> : null;
   };
 
-  return (
-    <div className="row mx-3 mx-md-0 justify-content-center align-items-center h-100">
-      <Table className="col-12" responsive>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Gender</th>
-            <th>Date of Birth</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users &&
-            users.length > 0 &&
-            users.map((user: any, index) => {
-              return (
-                <tr key={user._id}>
-                  <td>{index + 1}</td>
-                  <td>{user.profile.firstname || '-'}</td>
-                  <td>{user.profile.lastname || '-'}</td>
-                  <td>{user.profile.gender || '-'}</td>
-                  <td>{formattedDate(user.profile.date_of_birth) || '-'}</td>
-                  <td>{user.email || '-'}</td>
-                  <td>{user.phone || '-'}</td>
-                  <td>{user.role.name || '-'}</td>
-                  <td>
-                    <span className="d-flex">
-                      <EditIcon className="cursor-pointer mx-2" onClick={() => navigate(`/profile/${user._id}`)} /><DeleteIcon className="cursor-pointer mx-2" />
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </Table>
-    </div>
-  );
+  // Return the HOC
+  return CreateUserTable;
 };
 
+const UserListPage = TableWrapper(DataTable);
 export default UserListPage;

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { createFeatures } = require('./createFeatures')
 const { createRoles } = require('./createRoles');
-const { createAdmin, createUser } = require('./createAdmin');
+const { createAdmin, createUser } = require('./createUsers');
 require('dotenv').config();
 
 mongoose.connect(`mongodb://localhost:27017/${process.env.APP_NAME}`);

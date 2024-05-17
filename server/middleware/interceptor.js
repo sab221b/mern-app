@@ -54,6 +54,7 @@ module.exports = {
   },
 
   checkUserSession: async (req, res, next) => {
+    console.log('req--session', req.session.id)
     if (req.session.user_id || req.headers.session_id) {
       try {
         if (req.session.user_id) {
@@ -86,13 +87,4 @@ module.exports = {
     else
       next();
   },
-
-  sessionLogout: (req, res, next) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return console.log(err);
-      }
-      next()
-    });
-  }
 }
