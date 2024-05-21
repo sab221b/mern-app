@@ -56,7 +56,7 @@ const TableWrapper = (WrappedComponent: any) => {
         let columns: any[] = Object.keys(flattenedObject)?.filter(item => itemsToShow?.includes(item));
         columns = columns.map(item => {
           return {
-            field: item, headerName: item, width: 180
+            field: item, headerName: item, width: item === "email" ? 220 : 160
           }
         })
         return columns;
