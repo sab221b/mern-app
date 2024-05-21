@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const { addDefaultProperties } = require('../middleware/addDefaultProperties');
 
-var transactionSchema = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema({
     status: { type: String, required: true },
     description: { type: String },
     bill_number: { type: String },
@@ -14,10 +15,8 @@ var transactionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Profile'
-    },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
-    isDeleted: { type: Boolean, default: false }
+    }
 });
+addDefaultProperties(transactionSchema);
 
 module.exports = mongoose.model('Transaction', transactionSchema);

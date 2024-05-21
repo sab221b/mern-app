@@ -11,4 +11,4 @@ require('./profile');
 require('./feature');
 require('./role');
 require('./agentType');
-require('./transaction')
+require('./transaction');

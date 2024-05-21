@@ -127,10 +127,10 @@ const Login = (props: any) => {
   return (
     <div
       ref={parentDivRef}
-      className={`center-center flex-column loginWrapper ${formname === "profile" && "bg-info"}`}
+      className={`center-center flex-column vh-100 loginBg ${(formname === "login" || formname === "signup") && "loginBg"} ${formname === "profile" && "bg-info"}`}
       style={datepickerShow ? { minHeight: 900 } : {}}
     >
-      <Typography variant="h4" textTransform={"capitalize"} gutterBottom>
+      <Typography className="text-white" variant="h4" textTransform={"capitalize"} gutterBottom>
         {formname}
       </Typography>
       <Form

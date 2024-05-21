@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
+const { addDefaultProperties } = require('../middleware/addDefaultProperties');
 
-var roleSchema = new mongoose.Schema({
+const roleSchema = new mongoose.Schema({
     name: { type: String, unique: true, sparse: true, required: true },
     description: { type: String },
-    features: [{ type: mongoose.Schema.Types.Mixed }],
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
-    isDeleted: { type: Boolean, default: false }
+    features: [{ type: mongoose.Schema.Types.Mixed }]
 });
+addDefaultProperties(roleSchema);
 
 module.exports = mongoose.model('Role', roleSchema);

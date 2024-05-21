@@ -35,7 +35,7 @@ export default function Features() {
 
     return (
         <Box padding={{ xs: 2, md: 3, lg: 5, xl: 5 }} sx={{ flexGrow: 1 }}>
-            <Typography className='text-capitalize mb-3' variant="h4" component="div">
+            <Typography color={"white"} className='text-capitalize mb-3' variant="h4" component="div">
                 Features
             </Typography>
             <Grid container spacing={{ xs: 2, md: 3, lg: 5, xl: 5 }} columns={{ xs: 4, sm: 8, md: 12, lg: 12, xl: 12 }}>

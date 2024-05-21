@@ -14,7 +14,9 @@ const CheckSession = () => {
         sessionID?.length > 0 ?
             <>
                 <Header />
-                <PostLoginRoutes />
+                <div className="main-bg">
+                    <PostLoginRoutes />
+                </div>
             </> : <PreLoginRoutes />
     )
 

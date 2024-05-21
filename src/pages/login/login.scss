@@ -10,9 +10,8 @@
   flex-direction: column;
 }
 
-.loginWrapper {
-  height: 100vh;
-  background: aquamarine;
+.loginBg {
+  background-image: url('../../../public/mechanics.jpg');
 }
 
 @media (max-width: 520px) {

@@ -59,14 +59,14 @@ function Header() {
       <Navbar className="sticky-top" bg="light" expand="sm">
         <Container fluid={true}>
           <Nav.Link onClick={() => navigate("/")}>
-            <Navbar.Brand>Pro2z</Navbar.Brand>
+            <Navbar.Brand><strong>Pro2z</strong></Navbar.Brand>
           </Nav.Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link onClick={() => navigate("/dashboard")}>Dashboard</Nav.Link>
-              <Nav.Link onClick={() => navigate("/profile")}>My Profile</Nav.Link>
-              <Nav.Link onClick={() => toggleLogoutModal(true)}>Sign out</Nav.Link>
+              <Nav.Link onClick={() => navigate("/dashboard")}><strong>Dashboard</strong></Nav.Link>
+              <Nav.Link onClick={() => navigate("/profile")}><strong>My Profile</strong></Nav.Link>
+              <Nav.Link onClick={() => toggleLogoutModal(true)}><strong>Sign out</strong></Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

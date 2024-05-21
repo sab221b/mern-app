@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const { addDefaultProperties } = require('../middleware/addDefaultProperties');
 
-var userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phone: { type: String, unique: true, sparse: true },
@@ -14,10 +15,8 @@ var userSchema = new mongoose.Schema({
         required: true,
         ref: 'Role'
     },
-    lastLoginAt: { type: Date },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
-    isDeleted: { type: Boolean, default: false }
+    lastLoginAt: { type: Date }
 });
+addDefaultProperties(userSchema);
 
 module.exports = mongoose.model('User', userSchema);

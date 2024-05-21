@@ -9,6 +9,7 @@ export default function DataTable({ rows, columns }: DataTableProps) {
     return (
         <div style={{ height: 400, width: '100%' }}>
             <DataGrid
+                className='bg-white'
                 rows={rows}
                 columns={columns}
                 initialState={{
