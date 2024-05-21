@@ -7,6 +7,8 @@ const productSchema = new mongoose.Schema({
     price: { type: String, required: true },
     category: [{ type: mongoose.Schema.Types.Mixed }],
     brand: { type: String, required: true },
+    mfg_date: { type: Date, required: true },
+    exp_date: { type: Date },
     attributes: {
         type: Map,
         of: Schema.Types.Mixed

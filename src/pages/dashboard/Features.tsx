@@ -34,7 +34,7 @@ export default function Features() {
     }
 
     return (
-        <Box padding={{ xs: 2, md: 3, lg: 5, xl: 5 }} sx={{ flexGrow: 1 }}>
+        <Box padding={"1rem"} sx={{ flexGrow: 1 }}>
             <Typography color={"white"} className='text-capitalize mb-3' variant="h4" component="div">
                 Features
             </Typography>

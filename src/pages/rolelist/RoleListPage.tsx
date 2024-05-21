@@ -60,7 +60,8 @@ const TableWrapper = (WrappedComponent: any) => {
       ...props,
       rows: setRows(),
       columns: setColumns(),
-      title: "Roles"
+      title: "Roles",
+      navigationKey: "role"
     }
     return roleList ? <WrappedComponent {...newProps} /> : null;
   };
