@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ApiUrl } from "./constants";
 import { toast } from "react-toastify";
+import { getData, removeData } from "./storage";
 // const axios = require('axios');
 
 // Step-1: Create a new Axios instance with a custom config.
@@ -15,9 +16,13 @@ const Axios = axios.create({
 const requestHandler = (request: any) => {
   // Token will be dynamic so we can use any app-specific way to always
   // fetch the new token before making the call
-  request.headers.session_id =
-    sessionStorage.getItem("session_id") ||
-    localStorage.getItem("session_id") || "";
+  const session_id = getData().sessionId;
+  request.headers = {
+    ...request.headers,
+    ...session_id && {
+      "session-id": session_id,
+    }
+  }
   return request;
 };
 
@@ -28,8 +33,7 @@ const responseHandler = (response: any) => {
 const errorHandler = (error: any) => {
   if (error.response && error.response.status === 401) {
     // Handle 401 error (Unauthorized)
-    sessionStorage.removeItem("session_id");
-    localStorage.removeItem("session_id");
+    removeData();
     toast.error("You are not authorized to access this page.", {
       onClose: () => (window.location.href = "/"), // Redirect to the login page
     });

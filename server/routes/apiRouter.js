@@ -1,10 +1,11 @@
 var express = require("express");
 var router = express.Router();
+const { hidePassword } = require("../middleware/password");
+const { checkUserSession, getUserBySession } = require("../middleware/interceptor");
 const userCtrl = require("../controllers/user");
 const roleCtrl = require("../controllers/role");
 const featureCtrl = require("../controllers/feature");
-const { hidePassword } = require("../middleware/password");
-const { checkUserSession, getUserBySession } = require("../middleware/interceptor");
+const productCtrl = require('../controllers/product')
 
 /* GET api. */
 router.get("/", (req, res, next) => {
@@ -23,14 +24,20 @@ router.get("/user/:id", checkUserSession, userCtrl.getUserById);
 
 /* Role Router */
 router.get("/roles", checkUserSession, roleCtrl.getRoles);
-router.post("/roles/create", checkUserSession, roleCtrl.createRole);
 router.get("/roles/:id", checkUserSession, roleCtrl.getRoleById);
+router.post("/roles/create", checkUserSession, roleCtrl.createRole);
 router.post("/roles/:id", checkUserSession, roleCtrl.updateRole);
 
-/* Features Router */
+/* Feature Router */
 router.get("/features", checkUserSession, featureCtrl.getFeatures);
-router.post("/features/create", checkUserSession, featureCtrl.createFeature);
 router.get("/features/:id", checkUserSession, featureCtrl.getFeatureById);
+router.post("/features/create", checkUserSession, featureCtrl.createFeature);
 router.post("/features/:id", checkUserSession, featureCtrl.updateFeature);
+
+/* Product Router */
+router.get("/products", checkUserSession, productCtrl.getProducts);
+router.get("/products/:id", checkUserSession, productCtrl.getProductById);
+router.post("/products/create", checkUserSession, productCtrl.createProduct);
+router.post("/products/:id", checkUserSession, productCtrl.updateProduct);
 
 module.exports = router;

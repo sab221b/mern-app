@@ -7,4 +7,4 @@ const agentTypeSchema = new mongoose.Schema({
 });
 addDefaultProperties(agentTypeSchema);
 
-module.exports = mongoose.model('AgentType', agentTypeSchema);
+module.exports = mongoose.model('Agent-Type', agentTypeSchema);

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 const Profile = mongoose.model('Profile');
+const Role = mongoose.model('Role');
 const { encryptPassword, comparePassword } = require('../middleware/password');
 const { userSignup, userLogin, userUpdate } = require('../validations/user');
 const { mongoStore } = require('../mongoStore');
@@ -64,7 +65,7 @@ exports.login = async (req, res, next) => {
 
 exports.logout = (req, res) => {
   try {
-    mongoStore.destroy(req.headers.session_id);
+    mongoStore.destroy(req.headers["session-id"]);
     mongoStore.destroy(req.session.id);
     res.status(200).send({ message: "User logged out" });
   } catch (error) {
@@ -83,7 +84,7 @@ exports.updateProfile = async (req, res, next) => {
     const user = await User.findById(req.session.user_id).select('-password').populate('profile').populate('role');
     const profileId = user.profile._id;
     await Profile.findByIdAndUpdate(profileId, req.body.profile, { new: true });
-    updatedUser = await User.findById(req.session.user_id).select('-password').populate('profile').populate('role');
+    const updatedUser = await User.findById(req.session.user_id).select('-password').populate('profile').populate('role');
     res.status(200).send(updatedUser);
   } catch (error) {
     res.status(400).send(error);
@@ -100,7 +101,7 @@ exports.updateUser = async (req, res, next) => {
     const user = await User.findById(req.params.id).select('-password').populate('profile');
     const profileId = user.profile._id;
     await Profile.findByIdAndUpdate(profileId, req.body.profile, { new: true });
-    updatedUser = await User.findByIdAndUpdate(req.params.id, { profile: profileId, role: req.body.role }, { new: true })
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, { profile: profileId, role: req.body.role }, { new: true })
       .select('-password').populate('profile').populate('role');
     res.status(200).send(updatedUser);
   } catch (error) {
@@ -115,19 +116,27 @@ exports.createUser = async (req, res, next) => {
     return res.status(400).json(error);
   }
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({
+      $or: [
+        { email: req.body.email },
+        { phone: req.body.phone }
+      ]
+    });
     if (user) {
-      return res.status(409).send({ message: `user with ${req.body.email} already exists!` })
+      return res.status(409).send({ message: `user with email ${req.body.email} or phone ${req.body.phone} already exists!` })
     }
     const profile = new Profile(req.body.profile);
     const savedProfile = await profile.save();
     const hash = await encryptPassword(req.body.password);
+    const defaultRole = await Role.findOne({ name: 'general user' });
+    const defaultRoleId = defaultRole._id
     const newUser = new User();
     newUser.email = req.body.email;
     newUser.phone = req.body.phone;
     newUser.password = hash;
     newUser.profile = savedProfile._id;
     newUser.createdAt = new Date().toISOString();
+    newUser.role = defaultRoleId;
     const savedUser = await newUser.save();
     res.user = await savedUser.populate('profile');
     req.session.user_id = savedUser._id;

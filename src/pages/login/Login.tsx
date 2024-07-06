@@ -11,6 +11,7 @@ import {
   InputLabel,
   FormControl,
   Typography,
+  Autocomplete,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -20,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { actions as userActions } from "../../store/reducers/userSlice";
 import moment from "moment";
+import { setData } from "../../helpers/storage";
 
 const Login = (props: any) => {
   const { formTitle, userData, onUpdate, roles, userID } = props;
@@ -29,14 +31,14 @@ const Login = (props: any) => {
   let navigate = useNavigate();
   type Status = "login" | "signup" | "profile";
   const [formname, setFormType] = useState<Status>(formTitle || "login");
-  const [datepickerShow, setDatepickerShow] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
+    phone: "",
     password: "",
     firstname: "",
     lastname: "",
-    gender: "",
+    gender: { label: '', value: '' },
     role: "",
     date_of_birth: moment(),
   });
@@ -53,7 +55,7 @@ const Login = (props: any) => {
   const onSubmit = async (event: any) => {
     event.preventDefault();
     try {
-      const { email, password, firstname, lastname, gender, date_of_birth } =
+      const { email, phone, password, firstname, lastname, gender, date_of_birth } =
         formData;
       const profile = {
         firstname,
@@ -70,7 +72,7 @@ const Login = (props: any) => {
           break;
         }
         case "signup": {
-          payload = { email, password, profile };
+          payload = { email, phone, password, profile };
           resp = await Axios.post(`/user/${formname}`, payload);
           break;
         }
@@ -88,10 +90,12 @@ const Login = (props: any) => {
 
       let toastMessage = "";
       if (formname === "login" || formname === "signup") {
-        const session_id = resp?.headers?.get("session-id");
-        sessionStorage.setItem("session_id", session_id);
-        localStorage.setItem("session_id", session_id);
-        dispatch(userActions.setSessionId(session_id));
+        console.log('resp.headers.Session-Id', resp.headers.get('Session-Id'));
+        const sessionId = resp?.headers?.get("session-id");
+        const roleId = resp?.data?.role?._id;
+        setData({ sessionId, roleId });
+        dispatch(userActions.setSessionId(sessionId));
+        dispatch(userActions.setRoleId(resp.data.role._id));
         toastMessage = `Welcome ${resp.data.profile.firstname} ${resp.data.profile.lastname}`;
       } else if (formname === "profile") {
         toastMessage = "Profile Updated!";
@@ -103,8 +107,8 @@ const Login = (props: any) => {
         onClose: () => navigate("/"),
       });
     } catch (error: any) {
-      toast.error(error.response.message || error.response.data.message);
       console.log("login-error", error);
+      toast.error(error.response.message || error.response.data.message);
     }
   };
 
@@ -112,15 +116,16 @@ const Login = (props: any) => {
     if (userData) {
       const { firstname, lastname, gender, date_of_birth } = userData?.profile;
       const roleID = userData?.role?._id;
-      setFormData({
-        ...formData,
+      setFormData((prevFormData) => ({
+        ...prevFormData,
         firstname,
         lastname,
         gender,
         date_of_birth: moment(date_of_birth),
         email: userData.email,
+        phone: userData.phone,
         role: roleID
-      });
+      }));
     }
   }, [userData]);
 
@@ -128,7 +133,6 @@ const Login = (props: any) => {
     <div
       ref={parentDivRef}
       className={`center-center flex-column vh-100 loginBg ${(formname === "login" || formname === "signup") && "loginBg"} ${formname === "profile" && "bg-info"}`}
-      style={datepickerShow ? { minHeight: 900 } : {}}
     >
       <Typography className="text-white" variant="h4" textTransform={"capitalize"} gutterBottom>
         {formname}
@@ -181,11 +185,6 @@ const Login = (props: any) => {
                   value={formData.email}
                   onChange={handleChange}
                 />
-                {formname === "signup" && (
-                  <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                  </Form.Text>
-                )}
               </FormControl>
               <FormControl className="form-field">
                 <TextField
@@ -202,27 +201,41 @@ const Login = (props: any) => {
           {(formname === "signup" || formname === "profile") && (
             <>
               <FormControl className="form-field">
-                <InputLabel id="gender">Gender</InputLabel>
-                <Select
-                  labelId="gender"
-                  id="gender"
-                  value={formData.gender}
-                  label="Gender"
-                  name="gender"
+                <TextField
+                  type="text"
+                  name="phone"
+                  label="Phone"
+                  variant="outlined"
+                  value={formData.phone}
                   onChange={handleChange}
-                >
-                  <MenuItem value={"male"}>Male</MenuItem>
-                  <MenuItem value={"female"}>Female</MenuItem>
-                  <MenuItem value={"other"}>Other</MenuItem>
-                </Select>
+                />
+                {formname === "signup" && (
+                  <Form.Text className="text-muted">
+                    We'll never share your email or phone number with anyone else.
+                  </Form.Text>
+                )}
+              </FormControl>
+              <FormControl className="form-field">
+                <Autocomplete
+                  disablePortal
+                  id="gender"
+                  options={[
+                    { label: 'Male', value: 'male' },
+                    { label: 'Female', value: 'female' },
+                    { label: 'Other', value: 'other' }]
+                  }
+                  value={formData.gender}
+                  isOptionEqualToValue={(option: any, value: any) => true}
+                  onChange={(_: any, selectedOption: any) => {
+                    setFormData({ ...formData, gender: selectedOption.value });
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Gender" />}
+                />
               </FormControl>
               <FormControl className="form-field">
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                   <DatePicker
                     format="DD/MM/YYYY"
-                    onOpen={() => setDatepickerShow(true)}
-                    onClose={() => setDatepickerShow(false)}
-                    value={formData.date_of_birth}
                     onChange={handleChange}
                   />
                 </LocalizationProvider>

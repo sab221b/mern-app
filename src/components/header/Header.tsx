@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import Axios from "../../helpers/interceptor";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { actions as userActions } from "../../store/reducers/userSlice";
 import { Box, Button, Modal, Typography } from "@mui/material";
+import { removeData } from "../../helpers/storage";
 
 function Header() {
   const navigate = useNavigate();
@@ -13,26 +14,25 @@ function Header() {
   const userData = useSelector((state: any) => state.app.user.userData);
   const [showLogoutModal, toggleLogoutModal] = useState(false);
 
-  useEffect(() => {
-    if (!userData) {
-      getLoginUserInfo();
-    }
-  }, [userData]);
-
-  const getLoginUserInfo = async () => {
+  const getLoginUserInfo = useCallback(async () => {
     try {
       const resp = await Axios.get('/user/self');
       dispatch(userActions.setUserData(resp.data));
     } catch (error) {
       console.error("error fetching user from session", error);
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!userData) {
+      getLoginUserInfo();
+    }
+  }, [userData, getLoginUserInfo]);
 
   const logoutUser = async () => {
     try {
       const response: any = await Axios.get("/user/logout");
-      sessionStorage.removeItem("session_id");
-      localStorage.removeItem("session_id");
+      removeData();
       toast.success(response.data.message, {
         onClose: () => (window.location.href = "/"),
       });
@@ -43,7 +43,7 @@ function Header() {
   };
 
   const style = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -65,6 +65,7 @@ function Header() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link onClick={() => navigate("/dashboard")}><strong>Dashboard</strong></Nav.Link>
+              <Nav.Link onClick={() => navigate("/features")}><strong>Features</strong></Nav.Link>
               <Nav.Link onClick={() => navigate("/profile")}><strong>My Profile</strong></Nav.Link>
               <Nav.Link onClick={() => toggleLogoutModal(true)}><strong>Sign out</strong></Nav.Link>
             </Nav>

@@ -22,16 +22,13 @@ exports.getRoleById = async (req, res, next) => {
 
 exports.updateRole = async (req, res, next) => {
     try {
-        let { error } = userUpdate.validate(req.body);
+        let { error } = roleSchema.validate(req.body);
         if (error) {
             console.error(error);
             return res.status(400).json(error);
         }
-        const user = await User.findById(req.session.user_id).select('-password').populate('profile');
-        const profileId = user.profile._id;
-        await Profile.findByIdAndUpdate(profileId, req.body.profile, { new: true });
-        updatedUser = await User.findById(req.session.user_id).select('-password').populate('profile');
-        res.status(200).send(updatedUser);
+        const updatedRole = await Role.findByIdAndUpdate((req.params.id), req.body, { new: true });
+        res.status(200).send(updatedRole);
     } catch (error) {
         res.status(400).send(error);
     }

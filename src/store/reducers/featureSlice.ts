@@ -2,18 +2,18 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface ReduxState {
   app: {
-    featureData: {}
+    features: {}
   }
 }
 export interface State {
   loading: boolean,
   error: boolean,
-  featureData: any,
+  features: any,
 }
 export const initialState: State = {
   loading: false,
   error: false,
-  featureData: null,
+  features: null,
 };
 
 const userSlice = createSlice({
@@ -23,7 +23,7 @@ const userSlice = createSlice({
     setFeatures(state, action: PayloadAction<any>) {
       state.loading = false;
       state.error = false;
-      state.featureData = action.payload;
+      state.features = action.payload;
     },
   },
 });

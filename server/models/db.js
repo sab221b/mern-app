@@ -8,7 +8,9 @@ mongoose
 
 require('./user');
 require('./profile');
+require('./agentType');
+require('./brokerage');
 require('./feature');
 require('./role');
-require('./agentType');
 require('./transaction');
+require('./product')

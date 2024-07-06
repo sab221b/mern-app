@@ -14,7 +14,7 @@ const sessionDestroy = (req, res) => {
 
 const getSession = async (req, res) => {
   return new Promise((resolve, reject) => {
-    req.sessionStore.get(req.headers.session_id, (error, session) => {
+    req.sessionStore.get(req.headers["session-id"], (error, session) => {
       if (error) {
         // Handle error
         console.error("Error retrieving session:", error);
@@ -35,12 +35,12 @@ const getSession = async (req, res) => {
 
 module.exports = {
   getUserBySession: async (req, res, next) => {
-    if (req.session.user_id || req.headers.session_id) {
+    if (req.session.user_id || req.headers["session-id"]) {
       try {
         if (req.session.user_id) {
           const user = await User.findById(req.session.user_id).select('-password').populate('profile').populate('role');
           if (user && user._id) res.status(200).send(user);
-        } else if (req.headers.session_id) {
+        } else if (req.headers["session-id"]) {
           const session = await getSession(req, res);
           const user = session && await User.findById(session.user_id).select('-password').populate('profile').populate('role');
           if (user && user._id) res.status(200).send(user);
@@ -54,12 +54,12 @@ module.exports = {
   },
 
   checkUserSession: async (req, res, next) => {
-    if (req.session.user_id || req.headers.session_id) {
+    if (req.session.user_id || req.headers["session-id"]) {
       try {
         if (req.session.user_id) {
           const user = await User.findById(req.session.user_id);
           if (user && user._id) next();
-        } else if (req.headers.session_id) {
+        } else if (req.headers["session-id"]) {
           const session = await getSession(req, res);
           const user = session && await User.findById(session.user_id);
           if (user && user._id) next();
@@ -74,7 +74,7 @@ module.exports = {
   },
 
   checkAdminRole: (req, res, next) => {
-    if (req.session.user_id && (req.session.role_id == 1 || req.session.role_id == 2))
+    if (req.session.user_id && (req.session.role_id === 1 || req.session.role_id === 2))
       next();
     else
       next(createError(403));

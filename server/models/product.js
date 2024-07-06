@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const { addDefaultProperties } = require('../middleware/addDefaultProperties');
 
 const productSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
-    price: { type: String, required: true },
+    price: { type: Number, required: true },
     category: [{ type: mongoose.Schema.Types.Mixed }],
     brand: { type: String, required: true },
     mfg_date: { type: Date, required: true },
@@ -13,7 +14,7 @@ const productSchema = new mongoose.Schema({
         type: Map,
         of: Schema.Types.Mixed
     },
-    stock_quantity: { type: Number, default: 0 },
+    stock_quantity: { type: Number, default: 0, required: true },
     images: { type: [String], default: [] },
     reviews: [{
         user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -23,4 +24,4 @@ const productSchema = new mongoose.Schema({
 });
 addDefaultProperties(productSchema);
 
-module.exports = mongoose.model('Profile', productSchema);
+module.exports = mongoose.model('Product', productSchema);

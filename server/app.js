@@ -12,12 +12,6 @@ require('./models/db');
 const { mongoStore } = require('./mongoStore');
 var apiRouter = require('./routes/apiRouter');
 
-// app.use(cors({
-//   // origin: `${process.env.REACT_APP_URL}`, // Specify the origin of your React app
-//   origin: 'http://localhost:8081',
-//   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
-// }));
-
 app.use(cors());
 
 // view engine setup
@@ -30,9 +24,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 console.log('app-env ==============> ', app.get('env'));
 
+app.use((req, res, next) => {
+  // Allow all origins (change '*' to specific origin if needed)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Allow specified custom headers to be exposed to the client
+  res.setHeader('Access-Control-Expose-Headers', 'Session-Id');
+  next();
+});
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  cookie: { maxAge: 1000 * 60 * 60 * 24 }, // Setting maxAge to 1 day
+  // cookie: { maxAge: 1000 * 60 * 60 * 24 }, // Setting maxAge to 1 day
+  cookie: { maxAge: 1000 * 60 * 60 }, // Setting maxAge to 1 hour
   resave: false,
   saveUninitialized: false,
   store: mongoStore,
