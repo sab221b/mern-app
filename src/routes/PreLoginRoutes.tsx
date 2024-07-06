@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-const LoginPage = lazy(() => import(/* webpackChunkName: 'LoginPage' */'../pages/login/Login'));
+const LoginPage = lazy(() => import(/* webpackChunkName: 'LoginPage' */'../pages/user/Login'));
 
 const PreLoginRoutes = () => {
   return (

@@ -16,7 +16,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import "./login.scss";
+import "./Login.scss";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { actions as userActions } from "../../store/reducers/userSlice";
@@ -236,6 +236,7 @@ const Login = (props: any) => {
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                   <DatePicker
                     format="DD/MM/YYYY"
+                    {...userData?.profile?.date_of_birth && { value: formData.date_of_birth }}
                     onChange={handleChange}
                   />
                 </LocalizationProvider>

@@ -1,7 +1,7 @@
-import Login from "../login/Login";
+import Login from "./Login";
 import { useDispatch, useSelector } from "react-redux";
 import Axios from "../../helpers/interceptor";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { actions as userActions } from "../../store/reducers/userSlice";
 import { useParams } from "react-router-dom";
 
@@ -14,20 +14,7 @@ const profileWrapper = (WrappedComponent: any) => {
     const [roles, setRoles] = useState([]);
     const params = useParams();
 
-    useEffect(() => {
-      if (!userInfo && !params?.userID) {
-        getLoginUserInfo();
-      }
-    }, [userInfo]);
-
-    useEffect(() => {
-      if (params?.userID) {
-        getSelectedUserInfo(params?.userID);
-        getRoles();
-      }
-    }, [params?.userID])
-
-    const getLoginUserInfo = async () => {
+    const getLoginUserInfo = useCallback(async () => {
       try {
         const resp = await Axios.get('/user/self');
         dispatch(userActions.setUserData(resp.data));
@@ -35,37 +22,50 @@ const profileWrapper = (WrappedComponent: any) => {
       } catch (error) {
         console.error("error fetching user from session", error);
       }
-    };
+    }, [dispatch]);
 
-    const getSelectedUserInfo = async (userID: string) => {
+    const getSelectedUserInfo = useCallback(async (userID: string) => {
       try {
         const resp = await Axios.get(`/user/${userID}`);
         setUserInfo(resp.data);
       } catch (error) {
         console.error("error fetching user from session", error);
       }
-    };
+    }, []);
 
-    const getRoles = async () => {
+    const getRoles = useCallback(async () => {
       try {
         const resp = await Axios.get('/roles');
         setRoles(resp.data);
       } catch (error) {
         console.error("error fetching roles", error);
       }
-    }
+    }, []);
+
+    useEffect(() => {
+      if (!userInfo && !params?.userID) {
+        getLoginUserInfo();
+      }
+    }, [userInfo, params?.userID, getLoginUserInfo]);
+
+    useEffect(() => {
+      if (params?.userID) {
+        getSelectedUserInfo(params?.userID);
+        getRoles();
+      }
+    }, [params?.userID, getSelectedUserInfo, getRoles]);
 
     let newProps = {
       ...props,
       userData: userInfo,
       formTitle: "profile",
       roles,
-      userID: params?.userID
-    }
+      userID: params?.userID,
+    };
+
     return userInfo ? <WrappedComponent {...newProps} /> : null;
   };
 
-  // Return the HOC
   return LoginWrapper;
 };
 

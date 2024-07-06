@@ -37,7 +37,7 @@ const superAdminPayload = {
 const userPayload = {
     email: `sam.${process.env.APP_NAME}@gmail.com`,
     phone: "9878453211",
-    password: "Pass@123",
+    password: "Test@123",
     profile: {
         firstname: "Sam",
         lastname: "Whitwicky",

@@ -13,7 +13,7 @@ export default function Features() {
     const navigate = useNavigate();
 
     const onCardClick = (params: string) => {
-        navigate(`${params}/list`)
+        navigate(`/${params}/list`)
     }
 
     let roleId = useSelector((state: any) => {

@@ -13,6 +13,8 @@ export const flattenObject = (obj: Record<string, any>, prefix = ''): FlattenedO
             if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
                 // Recursively flatten nested objects
                 Object.assign(flattened, flattenObject(obj[key], prefixedKey));
+            } else if (Array.isArray(obj[key])) {
+                flattened[prefixedKey === '_id' ? 'id' : prefixedKey] = obj[key].join(', ');
             } else {
                 flattened[prefixedKey === '_id' ? 'id' : prefixedKey] = obj[key];
             }
