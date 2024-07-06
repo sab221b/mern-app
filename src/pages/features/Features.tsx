@@ -8,9 +8,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { getData } from '../../helpers/storage';
 
-
 export default function Features() {
-
     const [features, setFeatures] = useState([])
     const navigate = useNavigate();
 

@@ -8,7 +8,7 @@ mongoose.connect(`mongodb://localhost:27017/${process.env.APP_NAME}`);
 
 // Array of roles to be inserted
 const roles = [
-    { name: 'super admin', key: 'super-admin', features: ["all"], description: "Admin role with access to all features" },
+    { name: 'super admin', key: 'super-admin', features: [], description: "Admin role with access to all features" },
     { name: 'admin', key: 'admin', features: [], description: "Admin role with access to most features" },
     { name: 'shop owner', key: 'shop-owner', features: [], description: "Shop owner role with access to shop related features" },
     { name: 'product owner', key: 'product-owner', features: [], description: "Product owner role with access to product related features" },
@@ -166,8 +166,8 @@ exports.addPermissions = () => {
                 }
             })
             await Role.findOneAndUpdate({ key: 'general-user' }, { features: generalUserPermissions });
-            console.log('Permissions added successfully');
             resolve();
+            console.log('Permissions added successfully');
         } catch (err) {
             console.error('Error adding permissions', err);
             reject(err);
