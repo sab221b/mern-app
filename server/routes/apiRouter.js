@@ -6,6 +6,7 @@ const userCtrl = require("../controllers/user");
 const roleCtrl = require("../controllers/role");
 const featureCtrl = require("../controllers/feature");
 const productCtrl = require('../controllers/product')
+const cartCtrl = require('../controllers/cart')
 
 /* GET api. */
 router.get("/", (req, res, next) => {
@@ -39,5 +40,11 @@ router.get("/products", checkUserSession, productCtrl.getProducts);
 router.get("/products/:id", checkUserSession, productCtrl.getProductById);
 router.post("/products/create", checkUserSession, productCtrl.createProduct);
 router.post("/products/:id", checkUserSession, productCtrl.updateProduct);
+
+/* Cart Router */
+router.get("/cart/user", checkUserSession, cartCtrl.getCartFromUser);
+router.get("/cart/:id", checkUserSession, cartCtrl.getCartById);
+router.post("/cart/create", checkUserSession, cartCtrl.createCart);
+router.post("/cart/:id", checkUserSession, cartCtrl.updateCart);
 
 module.exports = router;

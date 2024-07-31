@@ -22,9 +22,21 @@ p {
   height: calc(100vh - 56px);
 }
 
-.main-bg {
-  background-image: url('../public/mechanics.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: calc(100vh - 56px);
+@media (min-width: 720px) {
+  .main-bg {
+    background-image: url('../public/mechanics.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: calc(100vh - 56px);
+  }
 }
+
+@media (max-width: 720px) {
+  .main-bg {
+    background-image: unset;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: calc(100vh - 56px);
+  }
+}
+

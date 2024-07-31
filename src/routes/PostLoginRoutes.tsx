@@ -7,6 +7,8 @@ const Features = lazy(() => import(/* webpackChunkName: 'Features' */'../pages/f
 const ProfilePage = lazy(() => import(/* webpackChunkName: 'ProfilePage' */'../pages/user/ProfilePage'));
 const UserListPage = lazy(() => import(/* webpackChunkName: 'UserList' */'../pages/user/UserList'));
 const RoleListPage = lazy(() => import(/* webpackChunkName: 'UserList' */'../pages/role/RoleList'));
+const ProductListPage = lazy(() => import(/* webpackChunkName: 'UserList' */'../pages/products/ProductList'));
+const ProductViewPage = lazy(() => import(/* webpackChunkName: 'UserList' */'../pages/products/ProductView'));
 
 const PostLoginRoutes = () => {
   console.log('inside post login routes');
@@ -20,6 +22,8 @@ const PostLoginRoutes = () => {
         <Route path={'/user/list'} element={<UserListPage />} />
         <Route path={'/role/list'} element={<RoleListPage />} />
         <Route path={'/profile'} element={<ProfilePage />} />
+        <Route path={'/product/list'} element={<ProductListPage />} />
+        <Route path={'/product/:productID'} element={<ProductViewPage />} />
         <Route path={'/user/:userID'} element={<ProfilePage />} />
       </Routes>
     </Suspense>

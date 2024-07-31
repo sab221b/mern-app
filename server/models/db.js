@@ -13,4 +13,5 @@ require('./brokerage');
 require('./feature');
 require('./role');
 require('./transaction');
-require('./product')
+require('./product');
+require('./cart')

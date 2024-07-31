@@ -103,9 +103,10 @@ const Login = (props: any) => {
           dispatch(userActions.setUserData(resp.data));
         }
       }
-      toast.success(toastMessage, {
-        onClose: () => navigate("/"),
-      });
+      toast.success(toastMessage);
+      setTimeout(() => {
+        navigate("/")
+      }, 2000)
     } catch (error: any) {
       console.log("login-error", error);
       toast.error(error.response.message || error.response.data.message);
