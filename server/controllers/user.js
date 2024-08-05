@@ -138,7 +138,7 @@ exports.createUser = async (req, res, next) => {
     newUser.createdAt = new Date().toISOString();
     newUser.role = defaultRoleId;
     const savedUser = await newUser.save();
-    res.user = await savedUser.populate('profile');
+    res.user = await User.findById(savedUser._id).select('-password').populate('profile').populate('role');
     req.session.user_id = savedUser._id;
     res.set('Session-Id', req.session.id);
     res.setHeader('Access-Control-Expose-Headers', 'Session-Id')
